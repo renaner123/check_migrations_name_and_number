@@ -24,13 +24,18 @@ do
 
     if [ -n "$duplicados" ]; then
         echo "Erro: Arquivos com numeração duplicada encontrados na pasta $DIR!"
-     
+
         # Listar apenas os novos arquivos que causaram a duplicação
         for numero in $duplicados; do
-            arquivos_duplicados=$(echo "$arquivos_atual" | grep "^$numero-" | grep -v -F -x -f <(echo "$arquivos_main"))
+            # Filtrar apenas os arquivos da branch atual que possuem a numeração duplicada
+            arquivos_duplicados=$(echo "$arquivos_atual" | grep "^$numero-")
             if [ -n "$arquivos_duplicados" ]; then
-                echo "Arquivos duplicados para o número $numero:"
-                echo "$arquivos_duplicados"
+                # Verificar se o arquivo duplicado não está na branch main
+                arquivos_duplicados_nao_main=$(echo "$arquivos_duplicados" | grep -v -F -x -f <(echo "$arquivos_main"))
+                if [ -n "$arquivos_duplicados_nao_main" ]; then
+                    echo "Arquivos duplicados para o número $numero:"
+                    echo "$arquivos_duplicados_nao_main"
+                fi
             fi
         done
 
