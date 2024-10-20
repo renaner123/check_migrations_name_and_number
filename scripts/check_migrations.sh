@@ -47,8 +47,17 @@ for DIR in "${SQL_DIRS[@]}"; do
     # Remover duplicados na lista
     duplicados=($(echo "${duplicados[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
 
+    # Verificar se há duplicados entre os arquivos da branch atual
+    for numero in $(echo "$numeros_atual" | sort | uniq -d); do
+        duplicados+=("$numero")
+    done
+
+    # Remover duplicados novamente
+    duplicados=($(echo "${duplicados[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+
     if [ ${#duplicados[@]} -gt 0 ]; then
         echo "Erro: Arquivos com numeração duplicada encontrados na pasta $DIR!"
+        echo "Números duplicados: ${duplicados[*]}"
 
         # Listar apenas os novos arquivos que causaram a duplicação
         for numero in "${duplicados[@]}"; do
