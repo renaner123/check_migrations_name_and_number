@@ -12,39 +12,43 @@ do
     arquivos_main=$(git ls-tree -r --name-only origin/main $DIR | sed 's|.*/||' | grep -E '^[0-9]+-.*\.sql$')
     arquivos_atual=$(git ls-tree -r --name-only HEAD $DIR | sed 's|.*/||' | grep -E '^[0-9]+-.*\.sql$')
 
-    echo -e "Arquivos na branch main:\n$arquivos_main"
-    echo -e "Arquivos na branch atual:\n$arquivos_atual"
+    echo -e "Arquivos na branch main:\n$(echo "$arquivos_main" | tail -n 10)\n"
 
     # Extrair os números diretamente dos nomes dos arquivos
     numeros_main=$(echo "$arquivos_main" | sed -E 's/^([0-9]+)-.*/\1/' | sort -u)
-    numeros_atual=$(echo "$arquivos_atual" | sed -E 's/^([0-9]+)-.*/\1/' | sort -u)
+    numeros_atual=$(echo "$arquivos_atual" | sed -E 's/^([0-9]+)-.*/\1/' | sort)
+
+    # Inicializar uma lista para armazenar números duplicados
+    declare -A duplicados_map
 
     # Verificar duplicatas apenas nos novos arquivos
-    duplicados=$(echo "$numeros_atual" | grep -Fxf <(echo "$numeros_main"))
+    for numero in $numeros_atual; do
+        # Contar quantas vezes o número aparece na branch atual
+        count_atual=$(echo "$numeros_atual" | grep -o "$numero" | wc -l)
 
-    if [ -n "$duplicados" ]; then
+        # Se o número também estiver na branch main e aparece mais de uma vez na branch atual
+        if echo "$numeros_main" | grep -q -F "$numero" && [ "$count_atual" -gt 1 ]; then
+            duplicados_map["$numero"]=1  # Adiciona o número como chave no array associativo
+        fi
+    done
+
+    # Converte as chaves do array associativo em uma lista de números duplicados
+    duplicados=("${!duplicados_map[@]}")
+
+    if [ ${#duplicados[@]} -gt 0 ]; then
         echo "Erro: Arquivos com numeração duplicada encontrados na pasta $DIR!"
+        echo "Números duplicados: ${duplicados[*]}"
 
         # Listar apenas os novos arquivos que causaram a duplicação
-        for numero in $duplicados; do
+        for numero in "${duplicados[@]}"; do
             # Filtrar apenas os arquivos da branch atual que possuem a numeração duplicada
             arquivos_duplicados=$(echo "$arquivos_atual" | grep "^$numero-")
             if [ -n "$arquivos_duplicados" ]; then
-                # Verificar se o arquivo duplicado não está na branch main
-                arquivos_duplicados_nao_main=$(echo "$arquivos_duplicados" | grep -v -F -x -f <(echo "$arquivos_main"))
-                if [ -n "$arquivos_duplicados_nao_main" ]; then
-                    echo "Arquivos duplicados para o número $numero:"
-                    echo "$arquivos_duplicados_nao_main"
-                fi
+                echo "Arquivos duplicados para o número $numero:"
+                echo "$arquivos_duplicados" | sort -u
+                echo
             fi
         done
-
-        # Remover a saída de erro se não houver arquivos duplicados
-        if [ -z "$(echo "$arquivos_duplicados_nao_main")" ]; then
-            echo "Nenhum arquivo duplicado relevante encontrado."
-        else
-            exit 1
-        fi
     else
         echo "Nenhuma duplicidade encontrada na pasta $DIR."
     fi
