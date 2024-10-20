@@ -31,8 +31,11 @@ do
 
         # Listar apenas os novos arquivos que causaram a duplicação
         for numero in $duplicados; do
-            echo "Arquivos duplicados para o número $numero:"
-            echo "$arquivos_atual" | grep "^$numero-" | grep -v -F -x -f <(echo "$arquivos_main")
+            arquivos_duplicados=$(echo "$arquivos_atual" | grep "^$numero-" | grep -v -F -x -f <(echo "$arquivos_main"))
+            if [ -n "$arquivos_duplicados" ]; then
+                echo "Arquivos duplicados para o número $numero:"
+                echo "$arquivos_duplicados"
+            fi
         done
 
         exit 1
