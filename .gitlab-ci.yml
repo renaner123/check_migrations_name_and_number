@@ -1,0 +1,10 @@
+stages:
+  - validate
+
+check_migrations:
+  stage: validate
+  script:
+    - chmod +x ./scripts/check_migrations.sh  
+    - ./scripts/check_migrations.sh           
+  only:
+    - merge_requests
