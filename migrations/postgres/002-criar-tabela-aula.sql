@@ -10,4 +10,3 @@ comment on column aula.id is 'Identificador da aula';
 comment on column aula.nome is 'Nome da aula';
 comment on column aula.data is 'Data da aula';
 comment on column aula.sala_id is 'Identificador da sala de aula';
-
