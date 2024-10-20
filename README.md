@@ -1,4 +1,4 @@
-# Verificação de Migrações SQL
+# Verificação de nomes e números de Migrações SQL
 
 Este repositório contém scripts para verificar duplicidades em arquivos de migração SQL em diferentes pastas. Os scripts são executados automaticamente em pull requests para a branch `main` do repositório.
 
@@ -92,10 +92,11 @@ Arquivos na branch atual:
 002-criar-tabela-aula.sql
 003-criar-tabela-pessoa.sql
 004-criar-tabela-janela.sql
-005-criar-tabela-endereco.sql
+005-criar-tabela-janela.sql
 
-Nenhuma duplicidade de nomes encontrada na pasta ./migrations/postgres.
-Verificação de nomes concluída com sucesso. Pronto para enviar.
+Erro: Arquivos com nomes duplicados encontrados na pasta ./migrations/postgres!
+Nomes duplicados: criar-tabela-janela.sql
+Erro: Um ou mais erros de duplicidade de nomes foram encontrados.
 ```
 
 ## Como Funciona
@@ -109,3 +110,17 @@ Verificação de nomes concluída com sucesso. Pronto para enviar.
 
 ## Estrutura do Repositório
 
+```
+└───workflow-tests
+    ├───.github
+    │   └───workflows
+    ├───migrations
+    │   ├───mssql
+    │   ├───oracle
+    │   └───postgres
+    └───scripts
+```
+
+## Contribuições
+
+Sinta-se à vontade para contribuir com melhorias e correções nos scripts ou na documentação.

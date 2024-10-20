@@ -11,7 +11,7 @@ echo -e "Arquivos na branch main:\n$(echo "$arquivos_main" | tail -n 10)\n"
 # Extrair números da branch main
 numeros_main=$(echo "$arquivos_main" | sed -E 's/^([0-9]+)-.*/\1/' | sort -u)
 
-# Inicializar uma variável para indicar se houve erro
+# Variável para indicar se houve erro
 erro_duplicidade=false
 
 for DIR in "${SQL_DIRS[@]}"; do
@@ -30,10 +30,10 @@ for DIR in "${SQL_DIRS[@]}"; do
     # Extrair números da branch atual
     numeros_atual=$(echo "$arquivos_atual" | sed -E 's/^([0-9]+)-.*/\1/' | sort)
 
-    # Inicializar uma lista para armazenar números duplicados
+    # Lista para armazenar números duplicados
     duplicados=()
 
-    # Verificar duplicatas apenas nos novos arquivos
+    # Verificar duplicidade apenas nos novos arquivos
     for numero in $numeros_atual; do
         # Contar quantas vezes o número aparece na branch atual
         count_atual=$(echo "$numeros_atual" | grep -o "$numero" | wc -l)
