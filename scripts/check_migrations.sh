@@ -39,7 +39,12 @@ do
             fi
         done
 
-        exit 1
+        # Remover a saída de erro se não houver arquivos duplicados
+        if [ -z "$(echo "$arquivos_duplicados_nao_main")" ]; then
+            echo "Nenhum arquivo duplicado relevante encontrado."
+        else
+            exit 1
+        fi
     else
         echo "Nenhuma duplicidade encontrada na pasta $DIR."
     fi
