@@ -4,15 +4,19 @@ SQL_DIRS=("./migrations/oracle" "./migrations/mssql" "./migrations/postgres")
 
 git fetch origin main
 
+arquivos_main=$(git ls-tree -r --name-only origin/main $DIR | sed 's|.*/||' | grep -E '^[0-9]+-.*\.sql$')
+erro_encontrado=false  # Flag para indicar se houve erro
+
+echo -e "Arquivos na branch main:\n$(echo "$arquivos_main" | tail -n 10)\n"
+
 for DIR in "${SQL_DIRS[@]}"
 do
     echo -e "\nVerificando duplicidade na pasta: $DIR"
 
     # Listar apenas os nomes dos arquivos sem o caminho
-    arquivos_main=$(git ls-tree -r --name-only origin/main $DIR | sed 's|.*/||' | grep -E '^[0-9]+-.*\.sql$')
     arquivos_atual=$(git ls-tree -r --name-only HEAD $DIR | sed 's|.*/||' | grep -E '^[0-9]+-.*\.sql$')
 
-    echo -e "Arquivos na branch main:\n$(echo "$arquivos_main" | tail -n 10)\n"
+    echo -e "Arquivos na branch atual:\n$(echo "$arquivos_atual" | tail -n 10)\n"
 
     # Extrair os números diretamente dos nomes dos arquivos
     numeros_main=$(echo "$arquivos_main" | sed -E 's/^([0-9]+)-.*/\1/' | sort -u)
@@ -49,9 +53,17 @@ do
                 echo
             fi
         done
+
+        erro_encontrado=true  # Define o flag como verdadeiro
     else
         echo "Nenhuma duplicidade encontrada na pasta $DIR."
     fi
 done
 
-echo "Verificação concluída com sucesso. Pronto para enviar."
+# Verifica se algum erro foi encontrado
+if [ "$erro_encontrado" = true ]; then
+    echo "Erro: Um ou mais erros de duplicidade foram encontrados."
+    exit 1  # Para a execução da pipeline
+else
+    echo "Verificação concluída com sucesso. Pronto para enviar."
+fi
