@@ -16,7 +16,12 @@ jobs:
     - name: Set up Git
       run: git fetch origin main
 
-    - name: Run migration check script
+    - name: Run migration number check script
       run: |
-        chmod +x ./scripts/check_migrations.sh
-        ./scripts/check_migrations.sh
+        chmod +x ./scripts/check_migrations_number.sh
+        ./scripts/check_migrations_number.sh
+
+    - name: Run migration name check script
+      run: |
+        chmod +x ./scripts/check_migrations_name.sh
+        ./scripts/check_migrations_name.sh
