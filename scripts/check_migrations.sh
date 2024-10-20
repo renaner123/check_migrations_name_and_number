@@ -29,6 +29,13 @@ do
     if [ -n "$duplicados" ]; then
         echo "Erro: Arquivos com numeração duplicada encontrados na pasta $DIR!"
         echo "Números duplicados: $duplicados"
+
+        # Listar os arquivos que causaram a duplicação
+        for numero in $duplicados; do
+            echo "Arquivos duplicados para o número $numero:"
+            echo "$arquivos_atual" | grep "^$numero-"
+        done
+
         exit 1
     else
         echo "Nenhuma duplicidade encontrada na pasta $DIR."
