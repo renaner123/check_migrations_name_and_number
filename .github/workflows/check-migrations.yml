@@ -1,0 +1,22 @@
+name: Check SQL Migrations
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-migrations:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Git
+      run: git fetch origin main
+
+    - name: Run migration check script
+      run: |
+        chmod +x ./scripts/check_migrations.sh
+        ./scripts/check_migrations.sh
