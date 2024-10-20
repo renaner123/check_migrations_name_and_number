@@ -5,7 +5,7 @@ SQL_DIRS=("./migrations/oracle" "./migrations/mssql" "./migrations/postgres")
 git fetch origin main
 
 # Obter arquivos da branch main uma vez
-arquivos_main=$(git ls-tree -r --name-only origin/main | sed 's|.*/||' | grep -E '^[0-9]+-.*\.sql$')
+arquivos_main=$(git ls-tree -r --name-only origin/main | sed 's|.*/||' | grep -E '^[0-9]+-.*\.sql$' | sort -u)
 echo -e "Arquivos na branch main:\n$(echo "$arquivos_main" | tail -n 10)\n"
 
 # Extrair números da branch main
