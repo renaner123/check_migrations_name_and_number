@@ -2,7 +2,7 @@
 
 SQL_DIRS=("./migrations/oracle" "./migrations/mssql" "./migrations/postgres")
 
-# Inicializar uma variável para indicar se houve erro
+# Indicar se houve erro
 erro_duplicidade=false
 
 for DIR in "${SQL_DIRS[@]}"; do
@@ -18,10 +18,10 @@ for DIR in "${SQL_DIRS[@]}"; do
 
     echo -e "Arquivos na branch atual:\n$arquivos_atual\n"
 
-    # Inicializar uma lista para armazenar nomes duplicados
+    # Lista para armazenar nomes duplicados
     duplicados=()
 
-    # Verificar duplicatas nos arquivos da branch atual
+    # Verificar duplicidade nos arquivos da branch atual
     for arquivo in $arquivos_atual; do
         # Extrair o nome sem o número
         nome="${arquivo#*-}"
